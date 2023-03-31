@@ -5,9 +5,14 @@ Rails.application.routes.draw do
   # root "articles#index"
   # route to test your configuration
   
-  get '/hello', to: 'application#hello_world'
+   # root "articles#index"
+   get '/cats', to: 'controller#cat'
 
-  get '*path',
+  get '/hello', to: 'application#hello_world'
+  get '/cats', to: 'application#Cat'
+
+      get '*path',
       to: 'fallback#index',
+      
       constraints: ->(req) { !req.xhr? && req.format.html? }
 end

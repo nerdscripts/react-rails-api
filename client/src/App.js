@@ -1,19 +1,100 @@
-import { useState, useEffect } from "react";
+// import logo from './logo.svg';
+import React, { useState, useEffect } from "react";
+import './App.css';
+
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+//import logo from './images/logo-no-background.png'
+import Listings from './components/Listings'
+import Home from './components/Home';
+import Navigation from './components/Navigation';
+import NewListing from './components/NewListing';
+
+
+
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [cats, setCats] = useState([]);
+  const [listings, setListings] = useState([]);
+
+  const styles = {
+    main: {
+      paddingTop: "100px",
+      paddingBottom: "100px",
+      display: "flex",
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-evenly",
+      alignItems: "center",
+      alignContent: "center"
+    }
+  }
+  
+  useEffect(() => {
+    fetch("http://localhost:3000/cats")
+    .then((r) => r.json())
+    .then((data) => {
+      setCats(data);
+    });
+  }, []);
 
   useEffect(() => {
-    fetch("/hello")
-      .then((r) => r.json())
-      .then((data) => setCount(data.count));
+    fetch("http://localhost:3000/listings")
+    .then((r) => r.json())
+    .then((listings) => {
+      setListings(listings);   
+    });
   }, []);
+
+  const addNewCategory = (cat) => {
+    setCats([...cats, cat])
+  }
 
   return (
     <div className="App">
-      <h1>Page Count: {count}</h1>
+      
+      <Navigation className="Navigation" />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route 
+          path="/listings" 
+          element=
+            {<Listings 
+              cats={cats} 
+              setCats={setCats}
+              listings={listings} 
+              setListings={setListings}
+              addNewCategory={addNewCategory}
+            />} 
+        />
+        <Route 
+          path="/listings/new" 
+          element=
+            {<NewListing 
+              cats={cats} 
+              listings={listings} 
+              setListings={setListings}
+            />} 
+        />
+        {/* <Route
+          path="/cats/new"
+          element=
+          {<NewCategory
+            cats={cats}
+          />}
+        /> */}
+      </Routes>
     </div>
-  );
+  )
 }
 
 export default App;
+
+   //<Router>
+     //  <Navigation />
+     //  <div className="App">
+     //   <Routes>
+      //    <Route path="/" element={<Home />} />
+        //   <Route path="/listings" element={<Listings cats={cats}/>} />
+       //  </Routes>
+      // </div>
+    // </Router>
